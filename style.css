@@ -85,19 +85,39 @@
 }
 
 .dir {
-  margin: 10px;
+  margin: 5px;
 }
 
-.font_attribute {
-  color: #696;
-}
-
-.font_element {
-  color: #d86;
+.element_base {
   font-weight: bold;
+}
+
+.element_default {
+  color: #d86;
+}
+
+.element_branch {
+  color: #F1C40F;
+}
+
+.element_invoke {
+  color: #2980B9;
+}
+
+.element_map {
+  color: #1ABC9C;
+}
+
+.attribute_base {
+  color: #696;
 }
 
 .comment {
   color: #000;
+}
+
+.linkr {
+  margin: 5px;
+  line-height: 1.5;
 }
 
