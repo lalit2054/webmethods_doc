@@ -88,3 +88,16 @@
   margin: 10px;
 }
 
+.font_attribute {
+  color: #696;
+}
+
+.font_element {
+  color: #d86;
+  font-weight: bold;
+}
+
+.comment {
+  color: #000;
+}
+
