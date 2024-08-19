@@ -79,11 +79,52 @@ def remove_mapcopy_name_link(element):
             del child.attrib['NAME']
         remove_mapcopy_name_link(child)
 
+def pretty_print_element(element, level=0):
+    indent = "  " * level
+    if len(element):
+        result = f"{indent}<{element.tag}"
+        for key, value in element.attrib.items():
+            result += f' {key}="{html.escape(value)}"'
+        result += ">\n"
+        if element.text and element.text.strip():
+            result += f"{indent}  {html.escape(element.text.strip())}\n"
+        for child in element:
+            result += pretty_print_element(child, level + 1)
+        result += f"{indent}</{element.tag}>\n"
+    else:
+        if element.text and element.text.strip():
+            result = f"{indent}<{element.tag}"
+            for key, value in element.attrib.items():
+                result += f' {key}="{html.escape(value)}"'
+            result += f">{html.escape(element.text.strip())}</{element.tag}>\n"
+        else:
+            result = f"{indent}<{element.tag}"
+            for key, value in element.attrib.items():
+                result += f' {key}="{html.escape(value)}"'
+            result += " />\n"
+    return result
+
+
+def format_attribute(k, v):
+    if k == "SERVICE":
+        return f'<span class="attribute_base">{k}="<span class=\'custom_class\'>{html.escape(v)}</span>"</span>'
+    else:
+        return f'<span class="attribute_base">{k}="{html.escape(v)}"</span>'
+
+
 def xml_to_html(element):
     tag = element.tag
 
-    attributes = " ".join([f'<span class="attribute_base">{k}="{html.escape(v)}"</span>' for k, v in element.attrib.items()])
-    
+    #attributes = " ".join([f'<span class="attribute_base">{k}="{html.escape(v)}"</span>' for k, v in element.attrib.items()])
+    formatted_attributes = []
+    for k, v in element.attrib.items():
+        if k == "SERVICE":
+            formatted_attributes.append(f'<span class="attribute_base">{k}="<span class=\'button-10\'><a href="{re.sub(r'[:.]', '/', v)}/flow.html">{html.escape(v)}</a></span>"</span>')
+        else:
+            formatted_attributes.append(f'<span class="attribute_base">{k}="{html.escape(v)}"</span>')   
+
+    attributes = "".join(formatted_attributes); 
+
     comment = ""
     open_str = "open"
     element_class = "element_default"
@@ -130,7 +171,11 @@ def xml_to_html(element):
             </li>
         '''
 
-def modify_xml_to_html(input_file, output_file):
+def modify_xml_to_html(input_file, output_dir, base_output_dir):
+    
+    output_html_file = os.path.join(output_dir, 'flow.html')
+    output_xml_file = os.path.join(output_dir, 'flow.xml')
+    
     # Load the XML file
     tree = ET.parse(input_file)
     root = tree.getroot()
@@ -142,20 +187,16 @@ def modify_xml_to_html(input_file, output_file):
     convert_mapset_elements(root)
     remove_mapcopy_name_link(root)
 
-    processed_xml_str = ET.tostring(root, encoding='unicode')
-
-    # Escape the XML for displaying as raw XML in HTML
-    escaped_xml = html.escape(processed_xml_str)
-
-    # Format the escaped XML into the desired HTML structure
-    raw_xml_output = f'<pre><code class="language-xml">{escaped_xml}</code></pre>'
+    pretty_xml = pretty_print_element(root)
     
+    with open(output_xml_file, 'w') as f:
+        f.write(pretty_xml)
+
     # Convert the XML to HTML
     html_content = xml_to_html(root)
 
-    relative_style_path = os.path.relpath('out/style.css', start=os.path.dirname(output_file))
-    relative_prism_style_path = os.path.relpath('out/prism.css', start=os.path.dirname(output_file))
-    relative_prism_script_path = os.path.relpath('out/prism.js', start=os.path.dirname(output_file))
+    relative_style_path = os.path.relpath(base_output_dir + '/style.css', start=os.path.dirname(output_html_file))
+    
     
     # HTML structure with CSS
     full_html = f'''<!DOCTYPE html>
@@ -165,36 +206,31 @@ def modify_xml_to_html(input_file, output_file):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>webMethods Package</title>
     <link rel="stylesheet" href="{relative_style_path}">
-    <link rel="stylesheet" href="{relative_prism_style_path}">
 </head>
 <body>
-    <ul class="tree">
+    <a class="button-10" href="flow.xml" target="_blank">View XML</a>
+    <ul class="tree" id="tree">
         {html_content}
     </ul>
-    {raw_xml_output}
-    <script src="{relative_prism_script_path}"></script>
 </body>
 </html>'''
 
-    # Ensure the output directory exists
-    os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    
     # Save the generated HTML content to a new file
-    with open(output_file, 'w') as f:
+    
+    with open(output_html_file, 'w') as f:
         f.write(full_html)
 
 def process_all_flow_xml_files_to_html():
-    base_output_dir = 'out'
+    base_output_dir = 'docs'
     for filepath in glob.iglob('**/flow.xml', recursive=True):
         # Determine the output HTML file path
         relative_path = os.path.relpath(filepath, start='.')
         dir_without_file = os.path.dirname(relative_path)
         output_dir = os.path.join(base_output_dir, dir_without_file)
-        output_file = os.path.join(output_dir, 'flow.html')
-        
+        os.makedirs(output_dir, exist_ok=True)
         print(f'Processing file to HTML: {filepath}')
-        modify_xml_to_html(filepath, output_file)
-        print(f'HTML file saved as: {output_file}')
+        modify_xml_to_html(filepath, output_dir, base_output_dir)
+        #print(f'HTML file saved as: {output_file}')
 
 if __name__ == "__main__":
     # Process all flow.xml files in the current directory and subdirectories to generate HTML

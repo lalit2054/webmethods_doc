@@ -143,15 +143,15 @@ def convert_structure_to_html(structure, base_path=""):
     return html
 
 if __name__ == "__main__":
-    out_dir = 'out'
+    out_dir = 'docs'
     root_dir = out_dir  # Assuming the root directory is the "out" directory where flow.html files are located
     
     os.makedirs(out_dir, exist_ok=True)
 
     download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/expand-collapse.svg')
     download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/style.css')
-    download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/prism.css')
-    download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/prism.js')
+    #download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/prism.css')
+    #download_file(out_dir, 'https://raw.githubusercontent.com/lalit2054/webmethods_doc/main/prism.js')
     
     
     # Download the expand-collapse.svg file
