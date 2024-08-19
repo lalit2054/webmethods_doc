@@ -171,9 +171,10 @@ a:visited {
 }
 
 .site-identity h1 {
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin: .6em 0;
   display: inline-block;
+  color: #1abc9c;
 }
 
 
