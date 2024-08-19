@@ -145,3 +145,21 @@
   outline: 0;
 }
 
+a {
+  color: red;
+  font-family: helvetica;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  color: black;
+}
+
+a:visited {
+  color: purple;
+}
+
