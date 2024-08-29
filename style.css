@@ -1,3 +1,8 @@
+body {
+  font-family: monospace;
+}
+
+
 .tree {
   --spacing: 1.5rem;
   --radius: 10px;
@@ -75,7 +80,7 @@
 }
 
 .card {
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 6px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   border-radius: 5px; /* 5px rounded corners */
   margin: 10px;
@@ -93,7 +98,7 @@
 }
 
 .element_default {
-  color: #d86;
+  color: #d35400;
 }
 
 .element_branch {
@@ -109,7 +114,11 @@
 }
 
 .attribute_base {
-  color: #696;
+  color: #27AE60;
+}
+
+.attribute_value {
+  color: #d35400;
 }
 
 .comment {
