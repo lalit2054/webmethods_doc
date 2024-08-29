@@ -89,6 +89,16 @@ body {
   color: #d86;
 }
 
+.card_child {
+  box-shadow: 0 4px 6px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px; /* 5px rounded corners */
+  margin: 5px;
+  padding: 5px;
+  width: fit-content;
+  color: #d86;
+}
+
 .dir {
   margin: 5px;
 }
